@@ -32,7 +32,7 @@
         </div>
         @if ($chats != null)
             <div class="col-md-8">
-                <x-adminlte-card title="Chat Message - Marwan" theme="success" icon="fas fa-chat" collapsible maximizable>
+                <x-adminlte-card title="Chat Message - {{ $chats->first()->contact }}" theme="success" icon="fas fa-chat" collapsible maximizable>
                     <div class="direct-chat-messages">
                         @foreach ($chats as $chat)
                             @if ($chat->direct == 'in')
