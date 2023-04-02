@@ -6,6 +6,7 @@ use App\Models\Chat;
 use App\Models\ChatSession;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class WhatsappController extends Controller
 {
@@ -13,11 +14,12 @@ class WhatsappController extends Controller
     {
         $user = User::firstWhere('username', $request->username);
         $request['user_id'] = $user->id;
-        $this->create_chat_sesstion($request);
-        $this->save_chat($request);
-        dd($request->all());
+        if (!$request->isGroup) {
+            $this->create_chat_sesstion($request);
+            $this->save_chat($request);
+        }
+        return 1;
     }
-
     public function create_chat_sesstion(Request $request)
     {
         ChatSession::updateOrCreate(
@@ -37,6 +39,25 @@ class WhatsappController extends Controller
     }
     public function save_chat(Request $request)
     {
+        $request['direct'] = 'in';
         Chat::create($request->all());
+    }
+    public function send_message(Request $request)
+    {
+        $url =  "http://127.0.0.1:3000/send-message";
+        $response = Http::post($url, [
+            'number' => $request->number,
+            'message' => $request->message,
+            'username' => 'marwan',
+        ]);
+        $response = json_decode($response->getBody());
+
+        $request['direct'] = 'out';
+        $request['chatid'] = uniqid();
+        $request['username'] = 'marwan';
+        $request['user_id'] = '1';
+        Chat::create($request->all());
+
+        return $response;
     }
 }

@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('chatid');
             $table->string('number');
             $table->string('contact')->nullable();
-            $table->string('message')->nullable();
+            $table->text('message')->nullable();
             $table->string('isGroup')->nullable();
+            $table->string('direct');
             $table->string('username');
             $table->string('user_id');
             $table->timestamps();
